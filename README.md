@@ -14,7 +14,7 @@ Para testearlo hay que setear el #define del software que se encuentra en el mai
   
   Ahora, el ESP32 se conecta al red WiFi si todo salió bien, sino, se vuelve a poner en modo AP y se deben repetir los pasos anteriores.
   
-  Una vez conectado, se debe abrir un Socket en el puerto 50 (está hardcodeado, al igual que el ip) con IP: 192.168.0.214
+  Una vez conectado, se debe abrir un Socket en el puerto 50 (está hardcodeado)
   Cuando el socket se haya abierto, se oprime el pulsador de propósito general de la placa y se habilita el envío de datos al socket. Si se desea detener la transmisión de datos se debe volver a presionar el pulsador de propósito general de la placa y el socket se cerrará. 
 
 
