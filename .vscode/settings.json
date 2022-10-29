@@ -15,6 +15,7 @@
     "files.associations": {
         "*.ipp": "c",
         "esp_adc_cal.h": "c",
-        "thread": "c"
+        "thread": "c",
+        "*.inc": "c"
     }
 }

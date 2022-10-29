@@ -86,7 +86,7 @@
 #define ON 1
 
 // Definicion de largo de cola de mensajes
-#define LARGO_COLA 10
+#define LARGO_COLA 5
 
 // Definicion plataforma que se utilice ----> Opciones: PROTOBOARD | WIMUMO | PLACA
 // Canal 5 es para entrar derecho al ADC, Canal 7 es para conectar al electrodo
@@ -135,7 +135,7 @@ esp_netif_t *sta_object, *ap_object;
 static intr_handle_t s_timer_handle;
 
 // Para el socket
-enum estados{espera, configuracion, acumulacion, envio};
+enum estados{espera, configuracion, acumulacion};
 
 // Variables utilizadas para la configuracion del ADC
 static esp_adc_cal_characteristics_t *adc_chars;
@@ -407,20 +407,16 @@ void vSocket(void *pvParameters){
                     else if(cantidad_elementos==LARGO_COLA){
                         cantidad_elementos=0;
                         buffer_pointer = &buffer1[0];
-                        estado=envio;
+                        //estado=envio;
+                        err = send(sock, buffer_pointer, sizeof(buffer1), 0);
+                        if (err < 0){
+                        ESP_LOGE(TAG, "Error durante el envio, error: %d", errno);
+                        }
                     }
                 break;
-            case envio:
-                    err = send(sock, buffer_pointer, sizeof(buffer1), 0);
-                    if (err < 0){
-                        ESP_LOGE(TAG, "Error durante el envio, error: %d", errno);
-                        break;
-                    }
-                    estado=acumulacion;
             default:
                 break;
         }
-    //vTaskDelay(1/portTICK_PERIOD_MS);
     }
 }
 
@@ -482,7 +478,7 @@ void app_main(void){
     xTaskCreate(vBlinking, "Iluminacion", 1024, NULL, 0, NULL);
     xTaskCreate(vPulsador, "Conectar en default", 1024, NULL, 1, NULL);
     xTaskCreatePinnedToCore(vSocket, "Socket", 4096, NULL, configMAX_PRIORITIES-1, NULL, PROCESSING_CORE);
-    cola = xQueueCreate(LARGO_COLA+1, sizeof(uint32_t));        // LARGO_COLA + 1 para poder colocar un uint32 al final indicando el num de paquete
+    cola = xQueueCreate(LARGO_COLA, sizeof(uint32_t));
     xQueueReset(cola);
 
     // Inicio de super lazo.
